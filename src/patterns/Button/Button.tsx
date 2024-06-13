@@ -1,3 +1,3 @@
-import { Button } from "~/components/ui/button";
+import { Button } from '~/components/ui/button';
 
-export const DefaultButton = () => <Button>hi</Button>
+export const DefaultButton = () => <Button>hi</Button>;

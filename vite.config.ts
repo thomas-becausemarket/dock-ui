@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'
-import path, { resolve } from 'path'
-import react from '@vitejs/plugin-react'
-import dts from 'vite-plugin-dts'
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { libInjectCss } from 'vite-plugin-lib-inject-css'
-import tailwindcss from "tailwindcss";
+import react from '@vitejs/plugin-react';
+import path, { resolve } from 'path';
+import tailwindcss from 'tailwindcss';
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,17 +12,17 @@ export default defineConfig({
     react(),
     tsconfigPaths(),
     libInjectCss(),
-    dts({ rollupTypes: true })
+    dts({ rollupTypes: true }),
   ],
   resolve: {
     alias: {
-      "~": path.resolve(__dirname, "./src"),
+      '~': path.resolve(__dirname, './src'),
     },
   },
   build: {
     lib: {
       entry: resolve(__dirname, './src/index.ts'),
-      name: "dock",
+      name: 'dock',
       formats: ['es'],
       fileName: (format) => `index.${format}.js`,
     },
@@ -30,11 +30,11 @@ export default defineConfig({
       external: ['react', 'react-dom', 'tailwindcss', 'react/jsx-runtime'],
       output: {
         globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-          tailwindcss: "tailwindcss",
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          tailwindcss: 'tailwindcss',
         },
-      }
+      },
     },
     sourcemap: true,
     emptyOutDir: true,
@@ -44,4 +44,4 @@ export default defineConfig({
       plugins: [tailwindcss],
     },
   },
-})
+});
