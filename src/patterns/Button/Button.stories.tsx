@@ -1,3 +1,3 @@
-import { Button } from "./Button";
+import { Button } from "~/components/ui/button";
 
 export const DefaultButton = () => <Button>hi</Button>
