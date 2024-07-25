@@ -1,13 +1,7 @@
-import { Info, PlusIcon } from 'lucide-react';
+import {  PlusIcon } from 'lucide-react';
 
 import { Badge } from '~/components/ui/badge';
 import { Card, CardContent, CardTitle } from '~/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '~/components/ui/tooltip';
 import { cn } from '~/lib/utils';
 import { IIcon } from '~/types/icon';
 
@@ -32,7 +26,7 @@ export const InfoCard = ({
   className,
   titleIcons,
   title,
-  titleInfo,
+  // titleInfo,
   showBadge,
   noIcon,
   isLoading = false,
@@ -62,7 +56,6 @@ export const InfoCard = ({
   };
   return (
     <LoaderWrapper isLoading={isLoading}>
-      <TooltipProvider>
         <Card
           className={cn(
             'flex w-max min-w-[400px] items-start justify-between p-4',
@@ -81,21 +74,20 @@ export const InfoCard = ({
             {title && (
               <CardTitle className="flex items-center gap-2">
                 {title}{' '}
-                {!!titleInfo && (
+                {/* {!!titleInfo && (
                   <Tooltip>
                     <TooltipTrigger>
                       <Info className="h-5 w-5" />
                     </TooltipTrigger>
                     <TooltipContent>{titleInfo}</TooltipContent>
                   </Tooltip>
-                )}
+                )} */}
               </CardTitle>
             )}
             <CardContent className="pl-0">{children}</CardContent>
           </div>
           <div>{renderTitleIcons()}</div>
         </Card>
-      </TooltipProvider>
     </LoaderWrapper>
   );
 };

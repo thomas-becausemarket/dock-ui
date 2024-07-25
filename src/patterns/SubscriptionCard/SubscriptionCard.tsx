@@ -48,9 +48,7 @@ export const SubscriptionCard = ({
       <CardContent>
         <div className="space-y-4">
           <div className="flex justify-between">
-            <Button className="pl-0" variant="link">
-              Show Payment Card Info
-            </Button>
+            <Button className="pl-0">Show Payment Card Info</Button>
           </div>
           <div className="rounded border">
             <Table className="space-y-2 text-base">
@@ -100,7 +98,7 @@ export const SubscriptionCard = ({
         <Button>Move</Button>
         <Button>Change Interval</Button>
         <Button>Apply Coupon</Button>
-        <Button variant="destructive">Cancel</Button>
+        <Button>Cancel</Button>
         <Button>Order Now</Button>
       </CardFooter>
     </Card>
