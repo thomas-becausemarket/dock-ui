@@ -1,5 +1,3 @@
-import '../../globals.css';
+import { DockButton } from './Button';
 
-import { Button } from '~/components/ui/button';
-
-export const Default = () => <Button>hi</Button>;
+export const Default = () => <DockButton />;
