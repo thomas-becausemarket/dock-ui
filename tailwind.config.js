@@ -3,6 +3,7 @@ export const darkMode = ['class'];
 export const content = ['./src/**/*.{ts,tsx}'];
 export const prefix = '';
 export const theme = {
+  important: true,
   container: {
     center: true,
     padding: '2rem',
