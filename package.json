@@ -33,7 +33,9 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
+    "@chakra-ui/hooks": "^2.2.1",
     "@ladle/react": "^4.0.3",
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.1.1",
     "class-variance-authority": "^0.7.0",
