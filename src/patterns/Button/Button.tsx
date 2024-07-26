@@ -3,9 +3,10 @@ import { useMemo } from 'react';
 
 import { cn } from '~/lib/utils';
 
-export interface CustomButtonProps extends ButtonProps {
+export interface CustomButtonProps extends Omit<ButtonProps, 'rounded'> {
   loadingText?: string | boolean;
   fullWidth?: boolean;
+  rounded?: 'sm' | 'md' | 'lg' | 'full' | boolean
 }
 
 export const Button = ({
@@ -14,6 +15,7 @@ export const Button = ({
   loading,
   fullWidth,
   className,
+  rounded,
   ...rest
 }: CustomButtonProps) => {
   const renderLabel = useMemo(
@@ -25,16 +27,25 @@ export const Button = ({
         : label,
     [loading, label, loadingText]
   );
+  const renderRounded = useMemo(() => {
+    if (rounded) {
+      if (typeof rounded === 'boolean') return 'rounded'
+      return `rounded-${rounded}` || 'rounded'
+    }
+  }, [
+    rounded
+  ])
+
   return (
     <PRButton
       label={renderLabel}
       loading={loading}
-      severity="secondary"
       {...rest}
       className={cn(
-        'py-1.5 focus:shadow-none',
+        'py-1.5 focus:shadow-none rounded-none',
+        fullWidth && 'w-full',
+        rounded && renderRounded,
         className,
-        fullWidth && 'w-full'
       )}
     />
   );
