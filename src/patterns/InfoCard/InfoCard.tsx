@@ -1,19 +1,25 @@
-import {  PlusIcon } from 'lucide-react';
 
-import { Badge } from '~/components/ui/badge';
-import { Card, CardContent, CardTitle } from '~/components/ui/card';
+// import { Card, CardContent, CardTitle } from '~/components/ui/card';
 import { cn } from '~/lib/utils';
-import { IIcon } from '~/types/icon';
+import { Card } from 'primereact/card'
+import { Tooltip } from 'primereact/tooltip'
+import { Tag } from 'primereact/tag'
+import { ButtonGroup } from 'primereact/buttongroup'
+import { Menu } from 'primereact/menu';
+
 
 import { LoaderWrapper } from '../General/LoaderWrapper';
-import IconButton from '../IconButton/IconButton';
+import { Button } from '../Button/Button';
+import { IconType } from 'primereact/utils';
+import type { ButtonProps } from 'primereact/button';
+import { useRef } from 'react';
 
 interface InfoCardProps {
   children?: React.ReactNode;
   className?: string;
   title?: string;
   titleInfo?: string;
-  titleIcons?: IIcon[];
+  titleIcons?: IconType<ButtonProps>[] | undefined;
   showBadge?: boolean;
   noIcon?: boolean;
   isLoading?: boolean;
@@ -26,68 +32,105 @@ export const InfoCard = ({
   className,
   titleIcons,
   title,
-  // titleInfo,
+  titleInfo,
   showBadge,
   noIcon,
   isLoading = false,
   primaryIconAction,
   secondaryIconAction,
 }: InfoCardProps) => {
+  const menuRight = useRef<Menu>(null);
   const renderTitleIcons = () => {
     if (titleIcons) {
       return (
-        <div className="space-x-2">
+        <ButtonGroup>
           {titleIcons.map((icon, index) => (
-            <IconButton
+            <Button
+              rounded
+              size="small"
               key={index}
+              outlined
               icon={icon}
+              // className={cn('rounded-r', index === 0 && 'rounded-l rounded-r-none')}
               onClick={index === 0 ? primaryIconAction : secondaryIconAction}
             />
           ))}
-        </div>
+        </ButtonGroup>
       );
     }
 
     if (!noIcon) {
-      return [PlusIcon].map((icon, index) => (
-        <IconButton key={index} icon={icon} />
+      return ['plus'].map((icon, index) => (
+        <Button key={index} icon={icon} />
       ));
     }
   };
+
+  const CardTitle = () => {
+    if (!title) return null;
+
+    return (
+      <>
+        <Tooltip target=".info" />
+
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            {!showBadge && (
+              <Tag
+                value="Subscriber"
+                className="bg-blue-500 text-xs rounded flex items-center text-white"
+              />
+            )}
+            <i className="pi pi-ellipsis-h cursor-pointer" onClick={(event) => menuRight?.current?.toggle(event)}></i>
+            <Menu unstyled className="w-max border rounded shadow-md" pt={{
+              action: {
+                className: 'flex items-center justify-start gap-1 self-start'
+              },
+
+              menuitem: {
+                className: 'focus-visible:outline-none px-2 border-b py-1 hover:bg-gray-100 text-sm'
+              },
+
+            }} ref={menuRight} popup popupAlignment="right" model={[
+              { label: 'Edit', icon: 'pi pi-pencil' },
+              { label: 'Search', icon: 'pi pi-search' }
+            ]} />
+
+
+            {/* <div>{renderTitleIcons()}</div> */}
+
+          </div>
+          <div className="flex items-center gap-2">
+            {title} {` `}
+            {titleInfo && (
+              <i data-pr-tooltip="No notifications"
+                className="pi pi-info-circle info" data-pr-classname="text-sm" style={{ fontSize: '1rem', cursor: 'pointer' }} />
+            )}
+          </div>
+
+        </div>
+      </>
+    )
+  }
+
+
   return (
     <LoaderWrapper isLoading={isLoading}>
-        <Card
-          className={cn(
-            'flex w-max min-w-[400px] items-start justify-between p-4',
-            className
-          )}
-        >
-          <div className="space-y-2">
-            {!showBadge && (
-              <Badge
-                variant="default"
-                className="mb-2 bg-blue-500 text-sm text-white"
-              >
-                Subscriber
-              </Badge>
-            )}
-            {title && (
-              <CardTitle className="flex items-center gap-2">
-                {title}{' '}
-                {/* {!!titleInfo && (
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="h-5 w-5" />
-                    </TooltipTrigger>
-                    <TooltipContent>{titleInfo}</TooltipContent>
-                  </Tooltip>
-                )} */}
-              </CardTitle>
-            )}
-            <CardContent className="pl-0">{children}</CardContent>
-          </div>
-          <div>{renderTitleIcons()}</div>
-        </Card>
+      <Card
+        pt={{
+          body: {
+            className: 'w-full'
+          }
+        }}
+        title={<CardTitle />}
+        className={cn(
+          'flex w-max min-w-[400px] items-start justify-between p-4',
+          className
+        )}
+      >
+        <div className="pl-0">{children}</div>
+      </Card>
     </LoaderWrapper>
   );
 };
+

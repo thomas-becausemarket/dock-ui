@@ -6,7 +6,7 @@ import { cn } from '~/lib/utils';
 export interface CustomButtonProps extends Omit<ButtonProps, 'rounded'> {
   loadingText?: string | boolean;
   fullWidth?: boolean;
-  rounded?: 'sm' | 'md' | 'lg' | 'full' | boolean
+  rounded?: 'sm' | 'md' | 'lg' | 'full' | boolean;
 }
 
 export const Button = ({
@@ -16,36 +16,46 @@ export const Button = ({
   fullWidth,
   className,
   rounded,
+  icon,
   ...rest
 }: CustomButtonProps) => {
-  const renderLabel = useMemo(
-    () =>
-      loading
-        ? typeof loadingText === 'string'
-          ? loadingText
-          : 'Loading'
-        : label,
-    [loading, label, loadingText]
-  );
+  const renderLabel = useMemo(() => {
+    if (loading) {
+      if (loadingText && typeof loadingText === 'string') {
+        return loadingText;
+      } else {
+        return 'Loading';
+      }
+    } else {
+      return label;
+    }
+  }, [loading, label, loadingText]);
+
   const renderRounded = useMemo(() => {
     if (rounded) {
-      if (typeof rounded === 'boolean') return 'rounded'
-      return `rounded-${rounded}` || 'rounded'
+      if (typeof rounded === 'boolean') return 'rounded';
+      return `rounded-${rounded}` || 'rounded';
     }
-  }, [
-    rounded
-  ])
+  }, [rounded]);
+
+  console.log(renderLabel);
 
   return (
     <PRButton
+      pt={{
+        label: {
+          className: !label && 'hidden',
+        },
+      }}
       label={renderLabel}
       loading={loading}
       {...rest}
       className={cn(
-        'py-1.5 focus:shadow-none rounded-none',
+        'rounded-none py-1.5 focus:shadow-none',
         fullWidth && 'w-full',
         rounded && renderRounded,
-        className,
+        icon && `pi pi-${icon}`,
+        className
       )}
     />
   );

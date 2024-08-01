@@ -4,7 +4,7 @@ import { ISubscription } from '~/types/subscription';
 
 import { SubscriptionCard } from './SubscriptionCard';
 
-const subscriptions: ISubscription[] = [
+export const subscriptions: ISubscription[] = [
   {
     id: 1829985,
     customerId: 7282490704097,
