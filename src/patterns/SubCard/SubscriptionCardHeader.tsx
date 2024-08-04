@@ -5,6 +5,7 @@ import type { PanelHeaderTemplateOptions } from 'primereact/panel';
 import { Tag } from 'primereact/tag';
 import { useRef } from 'react';
 import { cn } from '~/lib/utils';
+import { ISubscription } from '~/types/subscription';
 
 const items = [
   {
@@ -25,7 +26,7 @@ const items = [
 ];
 
 interface CustomHeaderTemplateProps extends PanelHeaderTemplateOptions {
-  nextBillingDate: string;
+  subscription: ISubscription;
 }
 
 export const HeaderTemplate = ({
@@ -33,9 +34,51 @@ export const HeaderTemplate = ({
   titleElement,
   togglerElement,
   iconsElement,
-  nextBillingDate,
+  subscription,
 }: CustomHeaderTemplateProps) => {
   const configMenu = useRef<Menu | null>(null);
+  const { nextBillingDate, status, deliveryInterval, deliveryIntervalCount } =
+    subscription;
+  const deliveryIntervalValue = (
+    deliveryIntervalCount == 1 ? deliveryInterval : `${deliveryInterval}s`
+  ).toLowerCase();
+
+  const renderStatusTag = () => {
+    const statusData = (): { color: string; label: string } => {
+      switch (status) {
+        case 'ACTIVE':
+          return { color: 'bg-green-700', label: 'Active' };
+        case 'PAUSED':
+          return {
+            color: 'bg-slate-600',
+            label: 'Paused',
+          };
+        case 'CANCELLED':
+        case 'PAST_DUE':
+          return {
+            color: 'bg-red-600',
+            label: 'Past Due',
+          };
+        default:
+          return {
+            color: 'bg-slate-600',
+            label: 'Unknown',
+          };
+      }
+    };
+
+    const { color: statusColor, label: statusLabel } = statusData();
+
+    return (
+      <Tag
+        className={cn(
+          'w-full rounded p-1.5 text-sm font-medium tracking-wide',
+          statusColor
+        )}
+        value={statusLabel}
+      />
+    );
+  };
 
   return (
     <div className={cn('items-start bg-white', className)}>
@@ -67,12 +110,10 @@ export const HeaderTemplate = ({
         {togglerElement}
       </div> */}
       <div className="flex w-max flex-col gap-3">
-        <p>Every 2 months</p>
-        <Tag
-          className="w-full rounded p-2 px-4 text-sm"
-          value="Active"
-          severity="success"
-        />
+        <p className="font-semibold">
+          Every {deliveryIntervalCount} {deliveryIntervalValue}
+        </p>
+        {renderStatusTag()}
       </div>
     </div>
   );

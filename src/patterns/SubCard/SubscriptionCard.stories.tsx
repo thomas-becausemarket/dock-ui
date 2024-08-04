@@ -1,10 +1,7 @@
-import { ClipboardIcon } from 'lucide-react';
-
 import { ISubscription } from '~/types/subscription';
+import { SubCard } from './SubscriptionCard';
 
-import { SubscriptionCard } from './SubscriptionCard';
-
-export const subscriptions: ISubscription[] = [
+const subscriptions: ISubscription[] = [
   {
     id: 1829985,
     customerId: 7282490704097,
@@ -102,9 +99,12 @@ export const subscriptions: ISubscription[] = [
 ];
 
 export const Default = () => (
-  <SubscriptionCard
+  <SubCard
+    title={`Subscription #${subscriptions[0].id}`}
     subscription={subscriptions[0]}
-    title="Subscription #1829985"
-    titleIcon={<ClipboardIcon className="h-5 w-5 text-gray-400" />}
+    titleIcon="clipboard"
+    // buttonActions={{
+    //   move: () => console.log('I am move'),
+    // }}
   />
 );

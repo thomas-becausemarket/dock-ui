@@ -3,15 +3,14 @@ import type {
   PanelFooterTemplateOptions,
   PanelHeaderTemplateOptions,
 } from 'primereact/panel';
-import { ReactNode, useRef, useState } from 'react';
+import { MouseEvent, ReactNode, useRef, useState } from 'react';
 
 import { FooterTemplate } from './SubscriptionCardFooter';
 import { HeaderTemplate } from './SubscriptionCardHeader';
-import { ISubscription } from '~/types/subscription';
+import { ISubscription, ISubscriptionLineItem } from '~/types/subscription';
 import { cn } from '~/lib/utils';
 import { SubscriptionCardTable } from './SubscriptionCardTable';
 import { MenuItem } from 'primereact/menuitem';
-import { Button } from 'primereact/button';
 
 interface MenuItemActions {
   edit: () => void;
@@ -29,6 +28,14 @@ interface SubscriptionCardProps {
   tableCellMenuItems?: MenuItem[];
   defaultTableCellMenuItemActions?: MenuItemActions;
   buttonActions?: ButtonActions;
+  saveEditAction?: (
+    e: MouseEvent,
+    data: ISubscriptionLineItem
+  ) => Promise<void>;
+  cancelEditAction?: (
+    e: MouseEvent,
+    data: ISubscriptionLineItem
+  ) => Promise<void>;
   className?: string;
 }
 
@@ -56,29 +63,12 @@ export const SubCard = ({
   titleIcon,
   buttonActions,
   tableCellMenuItems = defaultTableCellMenuItems,
+  saveEditAction,
+  cancelEditAction,
   className,
 }: SubscriptionCardProps) => {
-  const togglePanelRef = useRef<Panel | Panel>(null);
+  const togglePanelRef = useRef<Panel | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const { nextBillingDate } = subscription;
-
-  const ShowMoreLessButton = () => {
-    if (subscription.lineItems.length < 4) return null;
-
-    return (
-      <div className="mt-2 flex w-full items-center justify-center">
-        <Button
-          text
-          onClick={(e) => {
-            togglePanelRef.current?.toggle(e);
-            setIsCollapsed(!isCollapsed);
-          }}
-        >
-          Show {isCollapsed ? 'more' : 'less'}
-        </Button>
-      </div>
-    );
-  };
 
   return (
     <Panel
@@ -94,7 +84,7 @@ export const SubCard = ({
       headerTemplate={(props: PanelHeaderTemplateOptions) => (
         <HeaderTemplate
           {...props}
-          nextBillingDate={nextBillingDate}
+          subscription={subscription}
           titleElement={<>{title}</>}
           iconsElement={
             <i className={cn(titleIcon && `pi pi-${titleIcon} text-xl`)}></i>
@@ -108,10 +98,12 @@ export const SubCard = ({
       <SubscriptionCardTable
         subscription={subscription}
         isCollapsed={isCollapsed}
-        ref={togglePanelRef}
         tableCellMenuItems={tableCellMenuItems}
+        saveEditAction={saveEditAction}
+        cancelEditAction={cancelEditAction}
+        togglePanelRef={togglePanelRef}
+        setIsCollapsed={setIsCollapsed}
       />
-      <ShowMoreLessButton />
     </Panel>
   );
 };

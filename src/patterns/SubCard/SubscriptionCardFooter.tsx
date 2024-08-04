@@ -9,37 +9,37 @@ const buttons = [
     label: 'Add Item',
     key: 'add-item',
     icon: 'pi pi-plus',
-    action: () => null,
+    command: () => null,
   },
   {
     label: 'Move',
     key: 'move',
     icon: 'pi pi-calendar-clock',
-    action: () => console.log('move'),
+    command: () => console.log('move'),
   },
   {
     label: 'Order Now',
     key: 'order',
     icon: 'pi pi-cart-arrow-down',
-    action: () => console.log('order now'),
+    command: () => console.log('order now'),
   },
   {
     label: 'Change Interval',
     key: 'interval',
     icon: 'pi pi-arrow-right-arrow-left',
-    action: () => console.log('change interval'),
+    command: () => console.log('change interval'),
   },
   {
     label: 'Apply Coupon',
     key: 'coupon',
     icon: 'pi pi-tags',
-    action: () => console.log('apply coupon'),
+    command: () => console.log('apply coupon'),
   },
   {
     label: 'Cancel',
     key: 'cancel',
     icon: 'pi pi-times',
-    action: () => console.log('Cancel'),
+    command: () => console.log('Cancel'),
   },
 ];
 
@@ -53,10 +53,9 @@ export const FooterTemplate = (options: CustomerFoooterTemplateProps) => {
   const { buttonActions } = options;
   const buttonsWithActions = buttons.map((button) => ({
     ...button,
-    action: buttonActions?.[button.key],
+    command: buttonActions?.[button.key],
   }));
   const menu = useRef<Menu>(null);
-  const button = useRef<Button>(null);
 
   return (
     <>
@@ -80,14 +79,14 @@ export const FooterTemplate = (options: CustomerFoooterTemplateProps) => {
             label={button.label}
             icon={button.icon}
             className="w-full rounded"
-            onClick={button.action || undefined}
+            onClick={button.command || undefined}
           />
         ))}
       </div>
       <div className="p-4 lg:hidden">
         <Menu model={buttons} popup ref={menu} id="popup_menu_left" />
         <Button
-          ref={button}
+          id="btn"
           size="small"
           label="Actions"
           icon="pi pi-angle-up"

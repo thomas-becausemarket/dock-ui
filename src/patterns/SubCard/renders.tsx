@@ -2,7 +2,13 @@ import { ColumnBodyOptions } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { priceFormat } from '~/lib/format';
 import { cn } from '~/lib/utils';
-import { ISubscriptionLineItem } from '~/types/subscription';
+import { ISubscription, ISubscriptionLineItem } from '~/types/subscription';
+
+interface PricingColumn {
+  label: string;
+  key: string;
+  value: string;
+}
 
 export const renderProductTitleBody = (
   data: ISubscriptionLineItem,
@@ -31,4 +37,43 @@ export const renderIsOneTimeAddedBody = (
 export const renderPriceBody = (
   data: ISubscriptionLineItem,
   _options: ColumnBodyOptions
-) => <p>{priceFormat(data.price)}</p>;
+) => <p>{priceFormat((Number(data.price) * data.quantity).toFixed(2))}</p>;
+
+export const generatePricingColumnsData = (subscription: ISubscription) => {
+  const { totalLineItemPrice, deliveryPrice, totalLineItemDiscountedPrice } =
+    subscription;
+  const discountPrice =
+    Number(totalLineItemPrice) - Number(totalLineItemDiscountedPrice || 0);
+
+  const pricingColumnsData = () => {
+    const data: PricingColumn[] = [
+      {
+        label: 'Subtotal',
+        key: 'subtotal',
+        value: `$${Number(totalLineItemPrice).toFixed(2)}`,
+      },
+      {
+        label: 'Shipping',
+        key: 'shipping',
+        value: `$${Number(deliveryPrice).toFixed(2)}`,
+      },
+
+      {
+        label: 'Pre Tax Estimated Total',
+        key: 'total',
+        value: `$${Number(Number(totalLineItemPrice) + Number(deliveryPrice) - Number(discountPrice)).toFixed(2)}`,
+      },
+    ].filter(Boolean) as PricingColumn[];
+
+    if (discountPrice !== 0) {
+      data.push({
+        label: 'Discounts',
+        key: 'discounts',
+        value: `-$${Number(discountPrice).toFixed(2)}`,
+      });
+    }
+    return data;
+  };
+
+  return pricingColumnsData();
+};
