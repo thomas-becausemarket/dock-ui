@@ -1,7 +1,7 @@
 import { ColumnBodyOptions } from 'primereact/column';
 import { Tag } from 'primereact/tag';
+
 import { priceFormat } from '~/lib/format';
-import { cn } from '~/lib/utils';
 import {
   ISubscription,
   ISubscriptionLineItem,
@@ -60,6 +60,7 @@ export const renderPriceBody = (
         {priceFormat(
           (
             Number(currentSwappedItem.variant.price) *
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             Number(selectedRowItem?.quantity!)
           ).toFixed(2)
         )}

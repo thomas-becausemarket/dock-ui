@@ -1,9 +1,8 @@
 import { format } from 'date-fns';
 import { Inplace, InplaceContent, InplaceDisplay } from 'primereact/inplace';
-import { Menu } from 'primereact/menu';
 import type { PanelHeaderTemplateOptions } from 'primereact/panel';
 import { Tag } from 'primereact/tag';
-import { useRef } from 'react';
+
 import { cn } from '~/lib/utils';
 import { ISubscription } from '~/types/subscription';
 
@@ -14,11 +13,9 @@ interface CustomHeaderTemplateProps extends PanelHeaderTemplateOptions {
 export const HeaderTemplate = ({
   className,
   titleElement,
-  togglerElement,
   iconsElement,
   subscription,
 }: CustomHeaderTemplateProps) => {
-  const configMenu = useRef<Menu | null>(null);
   const { nextBillingDate, status, deliveryInterval, deliveryIntervalCount } =
     subscription;
   const deliveryIntervalValue = (

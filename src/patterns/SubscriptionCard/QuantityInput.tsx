@@ -2,6 +2,7 @@ import {
   InputNumber,
   InputNumberValueChangeEvent,
 } from 'primereact/inputnumber';
+
 import { cn } from '~/lib/utils';
 import { ISubscriptionLineItem } from '~/types/subscription';
 

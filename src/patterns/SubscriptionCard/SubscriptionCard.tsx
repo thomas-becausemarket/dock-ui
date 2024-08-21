@@ -1,20 +1,21 @@
-import { Panel } from 'primereact/panel';
+import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
 import type {
   PanelFooterTemplateOptions,
   PanelHeaderTemplateOptions,
 } from 'primereact/panel';
+import { Panel } from 'primereact/panel';
 import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { FooterTemplate } from './SubscriptionCardFooter';
-import { HeaderTemplate } from './SubscriptionCardHeader';
+import { cn } from '~/lib/utils';
 import {
   ISubscription,
   ISubscriptionLineItem,
   SelectedProduct,
 } from '~/types/subscription';
-import { cn } from '~/lib/utils';
+
+import { FooterTemplate } from './SubscriptionCardFooter';
+import { HeaderTemplate } from './SubscriptionCardHeader';
 import { SubscriptionCardTable } from './SubscriptionCardTable';
-import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
 
 interface MenuItemActions {
   edit: () => void;
@@ -53,23 +54,23 @@ interface SubscriptionCardProps {
   className?: string;
 }
 
-const defaultTableCellMenuItems: MenuItem[] = [
-  {
-    label: 'Edit',
-    icon: 'pi pi-pen-to-square',
-    command: () => {},
-  },
-  {
-    label: 'Swap',
-    icon: 'pi pi-arrow-right-arrow-left',
-    command: () => {},
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-times',
-    command: () => {},
-  },
-];
+// const defaultTableCellMenuItems: MenuItem[] = [
+//   {
+//     label: 'Edit',
+//     icon: 'pi pi-pen-to-square',
+//     command: () => {},
+//   },
+//   {
+//     label: 'Swap',
+//     icon: 'pi pi-arrow-right-arrow-left',
+//     command: () => {},
+//   },
+//   {
+//     label: 'Delete',
+//     icon: 'pi pi-times',
+//     command: () => {},
+//   },
+// ];
 
 export const SubscriptionCard = ({
   subscription,
@@ -77,7 +78,7 @@ export const SubscriptionCard = ({
   titleIcon,
   buttonActions,
   getSelectedRowItem,
-  tableCellMenuItems = defaultTableCellMenuItems,
+  // tableCellMenuItems = defaultTableCellMenuItems,
   currentSwappedItem,
   saveEditAction,
   cancelEditAction,

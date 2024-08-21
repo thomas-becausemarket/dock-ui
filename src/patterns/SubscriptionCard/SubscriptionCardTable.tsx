@@ -1,26 +1,25 @@
+import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import { Menu } from 'primereact/menu';
+import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
+import { Panel } from 'primereact/panel';
+import { MouseEvent, useMemo, useRef, useState } from 'react';
+
 import {
   ISubscription,
   ISubscriptionLineItem,
   SelectedProduct,
 } from '~/types/subscription';
-import {
-  renderIsOneTimeAddedBody,
-  renderProductTitleBody,
-  renderPriceBody,
-  generatePricingColumnsData,
-} from './renders';
-import { MouseEvent, useMemo, useRef, useState } from 'react';
-import { Menu } from 'primereact/menu';
-import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
-import {
-  InputNumberChangeEvent,
-  InputNumberValueChangeEvent,
-} from 'primereact/inputnumber';
+
 import { QuantityInput } from './QuantityInput';
-import { Button } from 'primereact/button';
-import { Panel } from 'primereact/panel';
+import {
+  generatePricingColumnsData,
+  renderIsOneTimeAddedBody,
+  renderPriceBody,
+  renderProductTitleBody,
+} from './renders';
 
 interface SubscriptionCardTableProps {
   subscription: ISubscription;
@@ -108,7 +107,7 @@ export const SubscriptionCardTable = ({
       setEditableRows(newEditableRows);
     }
   };
-  const menuEditCommand = (event: MenuItemCommandEvent) => {
+  const menuEditCommand = () => {
     setupRowAdjustment();
   };
 
@@ -190,7 +189,7 @@ export const SubscriptionCardTable = ({
                 className: 'p-0 pl-4',
               },
             }}
-            body={(data, options) => {
+            body={(data) => {
               if (editableRows?.[data.id]) {
                 return (
                   <QuantityInput
@@ -285,7 +284,7 @@ export const SubscriptionCardTable = ({
           <Column
             align="left"
             field="label"
-            body={(data, _options) => {
+            body={(data) => {
               if (data.key === 'total') {
                 return <span className="font-bold">{data.label}</span>;
               }
@@ -300,7 +299,7 @@ export const SubscriptionCardTable = ({
                 className: 'relative',
               },
             }}
-            body={(data, _options) => {
+            body={(data) => {
               if (data.key === 'total') {
                 return <span className="font-bold">{data.value}</span>;
               }

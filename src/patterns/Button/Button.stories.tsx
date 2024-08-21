@@ -6,16 +6,10 @@ export const Default: Story<CustomButtonProps> = ({
   label,
   size,
   fullWidth,
-  rounded
+  rounded,
 }) => (
-  <Button
-    label={label}
-    size={size}
-    fullWidth={fullWidth}
-    rounded={rounded}
-  />
+  <Button label={label} size={size} fullWidth={fullWidth} rounded={rounded} />
 );
-
 
 Default.args = {
   label: 'Button',
@@ -33,23 +27,16 @@ Default.argTypes = {
   },
   rounded: {
     control: { type: 'boolean' },
-  }
+  },
 };
 
-export const IconButton: Story<CustomButtonProps> = ({
-  label,
-  icon,
-}) => (
-  <Button
-    icon={icon}
-    label={label ? 'Button' : undefined}
-  />
+export const IconButton: Story<CustomButtonProps> = ({ label, icon }) => (
+  <Button icon={icon} label={label ? 'Button' : undefined} />
 );
-
 
 IconButton.args = {
   label: 'Button',
-  icon: 'pi pi-verified'
+  icon: 'pi pi-verified',
 };
 
 IconButton.argTypes = {
@@ -61,13 +48,12 @@ IconButton.argTypes = {
     control: { type: 'text' },
     description: 'Icon to display',
   },
-}
-
+};
 
 export const LoadingButton: Story<CustomButtonProps> = ({
   loading,
   label,
-  loadingText
+  loadingText,
 }) => (
   <Button
     rounded
@@ -78,11 +64,10 @@ export const LoadingButton: Story<CustomButtonProps> = ({
   />
 );
 
-
 LoadingButton.args = {
   label: 'Button',
   loading: true,
-  loadingText: 'Loading'
+  loadingText: 'Loading',
 };
 
 LoadingButton.argTypes = {
@@ -97,5 +82,5 @@ LoadingButton.argTypes = {
   loadingText: {
     control: { type: 'text' },
     description: 'Loading text',
-  }
-}
+  },
+};

@@ -19,7 +19,10 @@ export const LoaderWrapper = ({
     return (
       <div className="relative">
         <div className="absolute inset-0 z-10 grid place-items-center">
-          <i className={cn("pi pi-spin pi-spinner", iconStyles)} style={{ fontSize: '2rem' }}></i>
+          <i
+            className={cn('pi pi-spin pi-spinner', iconStyles)}
+            style={{ fontSize: '2rem' }}
+          ></i>
         </div>
         <div className="relative inset-0 opacity-50">{children}</div>
       </div>
