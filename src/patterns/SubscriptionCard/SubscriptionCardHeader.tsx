@@ -7,24 +7,6 @@ import { useRef } from 'react';
 import { cn } from '~/lib/utils';
 import { ISubscription } from '~/types/subscription';
 
-const items = [
-  {
-    label: 'Refresh',
-    icon: 'pi pi-refresh',
-  },
-  {
-    label: 'Search',
-    icon: 'pi pi-search',
-  },
-  {
-    separator: true,
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-times',
-  },
-];
-
 interface CustomHeaderTemplateProps extends PanelHeaderTemplateOptions {
   subscription: ISubscription;
 }

@@ -3,14 +3,18 @@ import type {
   PanelFooterTemplateOptions,
   PanelHeaderTemplateOptions,
 } from 'primereact/panel';
-import { MouseEvent, ReactNode, useRef, useState } from 'react';
+import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
 import { FooterTemplate } from './SubscriptionCardFooter';
 import { HeaderTemplate } from './SubscriptionCardHeader';
-import { ISubscription, ISubscriptionLineItem } from '~/types/subscription';
+import {
+  ISubscription,
+  ISubscriptionLineItem,
+  SelectedProduct,
+} from '~/types/subscription';
 import { cn } from '~/lib/utils';
 import { SubscriptionCardTable } from './SubscriptionCardTable';
-import { MenuItem } from 'primereact/menuitem';
+import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
 
 interface MenuItemActions {
   edit: () => void;
@@ -27,10 +31,20 @@ interface SubscriptionCardProps {
   subscription: ISubscription;
   tableCellMenuItems?: MenuItem[];
   defaultTableCellMenuItemActions?: MenuItemActions;
+  getSelectedRowItem?: (data: ISubscriptionLineItem) => void;
+  menuSwapAction?: (
+    e: MenuItemCommandEvent,
+    data: ISubscriptionLineItem
+  ) => Promise<void>;
+  menuDeleteAction?: (
+    e: MenuItemCommandEvent,
+    data: ISubscriptionLineItem
+  ) => void;
   buttonActions?: ButtonActions;
+  currentSwappedItem?: SelectedProduct | undefined;
   saveEditAction?: (
     e: MouseEvent,
-    data: ISubscriptionLineItem
+    data: ISubscriptionLineItem | SelectedProduct
   ) => Promise<void>;
   cancelEditAction?: (
     e: MouseEvent,
@@ -57,19 +71,25 @@ const defaultTableCellMenuItems: MenuItem[] = [
   },
 ];
 
-export const SubCard = ({
+export const SubscriptionCard = ({
   subscription,
   title,
   titleIcon,
   buttonActions,
+  getSelectedRowItem,
   tableCellMenuItems = defaultTableCellMenuItems,
+  currentSwappedItem,
   saveEditAction,
   cancelEditAction,
+  menuSwapAction,
+  menuDeleteAction,
   className,
 }: SubscriptionCardProps) => {
   const togglePanelRef = useRef<Panel | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
-
+  useEffect(() => {
+    console.log(currentSwappedItem);
+  }, [currentSwappedItem]);
   return (
     <Panel
       className={cn(
@@ -98,11 +118,14 @@ export const SubCard = ({
       <SubscriptionCardTable
         subscription={subscription}
         isCollapsed={isCollapsed}
-        tableCellMenuItems={tableCellMenuItems}
         saveEditAction={saveEditAction}
         cancelEditAction={cancelEditAction}
+        menuSwapAction={menuSwapAction}
+        menuDeleteAction={menuDeleteAction}
         togglePanelRef={togglePanelRef}
         setIsCollapsed={setIsCollapsed}
+        getSelectedRowItem={getSelectedRowItem}
+        currentSwappedItem={currentSwappedItem}
       />
     </Panel>
   );

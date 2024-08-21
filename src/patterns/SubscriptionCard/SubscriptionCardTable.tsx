@@ -1,6 +1,10 @@
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { ISubscription, ISubscriptionLineItem } from '~/types/subscription';
+import {
+  ISubscription,
+  ISubscriptionLineItem,
+  SelectedProduct,
+} from '~/types/subscription';
 import {
   renderIsOneTimeAddedBody,
   renderProductTitleBody,
@@ -10,7 +14,10 @@ import {
 import { MouseEvent, useMemo, useRef, useState } from 'react';
 import { Menu } from 'primereact/menu';
 import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
-import { InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import {
+  InputNumberChangeEvent,
+  InputNumberValueChangeEvent,
+} from 'primereact/inputnumber';
 import { QuantityInput } from './QuantityInput';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
@@ -18,31 +25,40 @@ import { Panel } from 'primereact/panel';
 interface SubscriptionCardTableProps {
   subscription: ISubscription;
   isCollapsed?: boolean;
-  tableCellMenuItems?: MenuItem[];
+  currentSwappedItem?: SelectedProduct | undefined;
   saveEditAction?: (
     e: MouseEvent,
-    data: ISubscriptionLineItem
+    data: ISubscriptionLineItem | SelectedProduct
   ) => Promise<void>;
   cancelEditAction?: (
     e: MouseEvent,
     data: ISubscriptionLineItem
   ) => Promise<void>;
+  menuSwapAction?: (
+    event: MenuItemCommandEvent,
+    data: ISubscriptionLineItem
+  ) => Promise<void>;
+  menuDeleteAction?: (
+    event: MenuItemCommandEvent,
+    data: ISubscriptionLineItem
+  ) => void;
   togglePanelRef: React.RefObject<Panel | null>;
   setIsCollapsed: (value: boolean) => void;
+  getSelectedRowItem?: (data: ISubscriptionLineItem) => void;
 }
 
 export const SubscriptionCardTable = ({
   subscription,
   isCollapsed,
-  tableCellMenuItems,
   saveEditAction,
   cancelEditAction,
+  menuSwapAction,
+  getSelectedRowItem,
+  menuDeleteAction,
   togglePanelRef,
   setIsCollapsed,
+  currentSwappedItem,
 }: SubscriptionCardTableProps) => {
-  if (!tableCellMenuItems) {
-    console.warn('Please provide menu items');
-  }
   const menu = useRef<Menu>(null);
   const { totalLineItemPrice, totalLineItemDiscountedPrice } = subscription;
 
@@ -66,18 +82,12 @@ export const SubscriptionCardTable = ({
     e: MouseEvent,
     data: ISubscriptionLineItem
   ) => {
-    await saveEditAction?.(e, data);
+    if (currentSwappedItem) {
+      await saveEditAction?.(e, currentSwappedItem);
+    } else {
+      await saveEditAction?.(e, data);
+    }
     setEditableRows(null);
-
-    //   const index = subscription.lineItems.findIndex(
-    //     (item) => item.id === selectedRowItem?.id
-    //   );
-    //   if (index !== -1) {
-    //     subscription.lineItems[index] = selectedRowItem;
-    //     console.log('Item replaced successfully.');
-    //   } else {
-    //     console.log('Item not found.');
-    //   }
   };
 
   const cancelRowEditAction = async (
@@ -88,7 +98,7 @@ export const SubscriptionCardTable = ({
     setEditableRows(null);
   };
 
-  const menuEditCommand = (event: MenuItemCommandEvent) => {
+  const setupRowAdjustment = () => {
     if (selectedRowItem) {
       const newEditableRows = {
         ...editableRows,
@@ -98,16 +108,26 @@ export const SubscriptionCardTable = ({
       setEditableRows(newEditableRows);
     }
   };
+  const menuEditCommand = (event: MenuItemCommandEvent) => {
+    setupRowAdjustment();
+  };
 
-  const menuSwapCommand = (event: MenuItemCommandEvent) => {};
+  const menuSwapCommand = async (event: MenuItemCommandEvent) => {
+    if (selectedRowItem) {
+      await menuSwapAction?.(event, selectedRowItem);
+      setupRowAdjustment();
+    }
+  };
 
-  const menuDeleteCommand = (event: MenuItemCommandEvent) => {};
+  const menuDeleteCommand = async (event: MenuItemCommandEvent) => {
+    if (selectedRowItem) await menuDeleteAction?.(event, selectedRowItem);
+  };
 
   const onQuantityValueChange = (e: InputNumberValueChangeEvent) => {
     if (selectedRowItem) {
       setSelectedRowItem({
         ...selectedRowItem,
-        quantity: Number(e.target.value),
+        quantity: Number(e.value),
       });
     }
   };
@@ -165,6 +185,11 @@ export const SubscriptionCardTable = ({
           <Column
             className="relative"
             field="quantity"
+            pt={{
+              bodyCell: {
+                className: 'p-0 pl-4',
+              },
+            }}
             body={(data, options) => {
               if (editableRows?.[data.id]) {
                 return (
@@ -178,11 +203,31 @@ export const SubscriptionCardTable = ({
             }}
           />
           <Column field="isOneTimeAdded" body={renderIsOneTimeAddedBody} />
-          <Column field="productTitle" body={renderProductTitleBody} />
-          <Column field="price" body={renderPriceBody} />
+          <Column
+            field="productTitle"
+            body={(data, options) =>
+              renderProductTitleBody(
+                data,
+                options,
+                currentSwappedItem,
+                selectedRowItem
+              )
+            }
+          />
+          <Column
+            field="price"
+            body={(data, options) =>
+              renderPriceBody(
+                data,
+                options,
+                currentSwappedItem,
+                selectedRowItem
+              )
+            }
+          />
           <Column
             field=""
-            body={(data) => {
+            body={(data: ISubscriptionLineItem) => {
               if (editableRows?.[data.id]) {
                 return (
                   <div className="flex items-center gap-4">
@@ -201,7 +246,7 @@ export const SubscriptionCardTable = ({
                 <i
                   onClick={(event) => {
                     setSelectedRowItem(data);
-                    console.log(data);
+                    getSelectedRowItem?.(data);
                     menu.current?.toggle(event);
                   }}
                   className="pi pi-ellipsis-v cursor-pointer hover:scale-110"
@@ -234,7 +279,7 @@ export const SubscriptionCardTable = ({
             },
           }}
           className="border-x border-t"
-          value={generatePricingColumnsData(subscription)} // This should now be an array of PricingColumn
+          value={generatePricingColumnsData(subscription, currentSwappedItem)} // This should now be an array of PricingColumn
           stripedRows
         >
           <Column
@@ -250,9 +295,19 @@ export const SubscriptionCardTable = ({
           <Column className="w-2/6" />
           <Column
             field="value"
+            pt={{
+              bodyCell: {
+                className: 'relative',
+              },
+            }}
             body={(data, _options) => {
               if (data.key === 'total') {
                 return <span className="font-bold">{data.value}</span>;
+              }
+              if (data.key === 'discounts') {
+                return (
+                  <span className="absolute bottom-4 left-2">{data.value}</span>
+                );
               }
               return data.value;
             }}

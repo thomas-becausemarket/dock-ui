@@ -121,3 +121,17 @@ export interface ISubscriptionOrder {
   discounts: Discount[];
   shippingAddress?: ISubscriptionOrderShippingAddress;
 }
+
+export type IProductVariant = {
+  title: string;
+  shopifyId: number;
+  image: string | null;
+  sku: string;
+  price: string;
+  hasSellingPlan: boolean;
+};
+export interface SelectedProduct {
+  productId: number;
+  productTitle: string;
+  variant: IProductVariant;
+}

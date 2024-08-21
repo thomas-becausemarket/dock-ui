@@ -1,4 +1,5 @@
 import { Story } from '@ladle/react';
+
 import { InfoCard } from './InfoCard';
 
 export const DefaultInfoCard: Story<{

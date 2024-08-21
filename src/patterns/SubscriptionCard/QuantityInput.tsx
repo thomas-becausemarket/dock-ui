@@ -13,7 +13,7 @@ export const QuantityInput = ({
   onValueChange: (e: InputNumberValueChangeEvent) => void;
 }) => {
   return (
-    <div className="absolute top-4 flex items-center gap-2">
+    <div className="top-4 flex items-center gap-2">
       <InputNumber
         onValueChange={onValueChange}
         min={0}

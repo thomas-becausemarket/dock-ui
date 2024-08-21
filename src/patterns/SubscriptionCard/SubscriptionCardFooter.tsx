@@ -53,7 +53,7 @@ export const FooterTemplate = (options: CustomerFoooterTemplateProps) => {
   const { buttonActions } = options;
   const buttonsWithActions = buttons.map((button) => ({
     ...button,
-    command: buttonActions?.[button.key],
+    command: buttonActions?.[button.key] || button.command,
   }));
   const menu = useRef<Menu>(null);
 

@@ -1,5 +1,12 @@
-import { ISubscription } from '~/types/subscription';
-import { SubCard } from './SubscriptionCard';
+import { useEffect, useState } from 'react';
+
+import {
+  ISubscription,
+  ISubscriptionLineItem,
+  SelectedProduct,
+} from '~/types/subscription';
+
+import { SubscriptionCard } from '..';
 
 const subscriptions: ISubscription[] = [
   {
@@ -98,13 +105,49 @@ const subscriptions: ISubscription[] = [
   },
 ];
 
-export const Default = () => (
-  <SubCard
-    title={`Subscription #${subscriptions[0].id}`}
-    subscription={subscriptions[0]}
-    titleIcon="clipboard"
-    // buttonActions={{
-    //   move: () => console.log('I am move'),
-    // }}
-  />
-);
+const swappedItem = {
+  productId: 12345,
+  productTitle: 'Incredible Concrete Chips',
+  variant: {
+    title: 'Maroon / Large',
+    shopifyId: 67890,
+    image: null,
+    sku: 'PROD-1234',
+    price: '29.99',
+    hasSellingPlan: true,
+  },
+};
+
+export const Default = () => {
+  const [swap, setSwap] = useState<SelectedProduct | undefined>(undefined);
+  const [selectedRowItem, setSelectedRowItem] =
+    useState<ISubscriptionLineItem | null>(null);
+
+  const swapItem = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setSwap(swappedItem);
+  };
+
+  useEffect(() => {
+    console.log('selectedRowItem', selectedRowItem);
+  }, [selectedRowItem]);
+  return (
+    <SubscriptionCard
+      title={`Subscription #${subscriptions[0].id}`}
+      subscription={subscriptions[0]}
+      titleIcon="clipboard"
+      currentSwappedItem={swap}
+      menuSwapAction={swapItem}
+      cancelEditAction={async () => setSwap(undefined)}
+      getSelectedRowItem={setSelectedRowItem}
+      saveEditAction={async () => {
+        setSwap(undefined);
+        console.log(selectedRowItem);
+      }}
+      // buttonActions={{ cancel: () => swapItem() }}
+      // buttonActions={{
+      //   move: () => console.log('I am move'),
+      // }}
+    />
+  );
+};
